@@ -30,7 +30,7 @@ client.on("message", (message) => {
         {
             crontab.cancelJob(attendSched);
             attendSched = 0;
-            message.channel.send("BGMI reminder is turned OFF");
+            message.channel.send("Attendance reminder is turned OFF");
         }
     }
 
@@ -50,6 +50,18 @@ client.on("message", (message) => {
             bgmiSchedule = 0;
             message.channel.send("BGMI reminder is turned OFF");
         }
+    }
+    if(commandName === "help")
+    {
+        const helpEmbed = new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Available commands')
+        .addFields(
+            {name:"!attendace " ,value :"Used to activate and deactivate attendace reminder"},
+            {name:"!bgmi" , value:"Used to activate and deactivate the bgmi reminder"},
+            {name:"!help",value:"To get a list of available commands"},
+        );
+        message.channel.send(helpEmbed);
     }
 });
 
