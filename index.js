@@ -1,22 +1,15 @@
-const fs = require("fs");
 const Discord = require("discord.js");
 const { prefix, token } = require("./config.json");
+const crontab = require('node-crontab');
 
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
-
-const commandFiles = fs
-    .readdirSync("./commands")
-    .filter((file) => file.endsWith(".js"));
-
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.name, command);
-}
 
 client.once("ready", () => {
     console.log("Ready!");
 });
+
+var attendSched = 0;
+var bgmiSchedule = 0;
 
 client.on("message", (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -24,25 +17,39 @@ client.on("message", (message) => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    if (!client.commands.has(commandName)) return;
-
-    const command = client.commands.get(commandName);
-
-    if (command.arg && !args.length) {
-        let reply = `You didnt provide any arguments ${message.author}`;
-
-        if (command.usage) {
-            reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+    if(commandName === "attendance")
+    {
+        if(attendSched === 0)
+        {
+            message.channel.send("attendance reminder is ON");
+            attendSched = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
+                message.channel.send("Its been a minute now")
+            });
         }
-
-        return message.channel.send(reply);
+        else
+        {
+            crontab.cancelJob(attendSched);
+            attendSched = 0;
+            message.channel.send("BGMI reminder is turned OFF");
+        }
     }
 
-    try {
-        command.execute(message, args);
-    } catch (error) {
-        console.error(error);
-        message.reply("there was an error trying to execute that command!");
+    //command for bgmi schedule
+    if(commandName === "bgmi")
+    {
+        if(bgmiSchedule === 0)
+        {
+            message.channel.send("BGMI reminder is ON");
+            bgmiSchedule = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
+                message.channel.send("Its been a minute now")
+            });
+        }
+        else
+        {
+            crontab.cancelJob(bgmiSchedule);
+            bgmiSchedule = 0;
+            message.channel.send("BGMI reminder is turned OFF");
+        }
     }
 });
 
