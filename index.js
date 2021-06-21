@@ -10,6 +10,7 @@ client.once("ready", () => {
 
 var attendSched = 0;
 var bgmiSchedule = 0;
+let active = []
 
 client.on("message", (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -25,12 +26,14 @@ client.on("message", (message) => {
             attendSched = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
                 message.channel.send("Its been a minute now")
             });
+            active.push("attendance");
         }
         else
         {
             crontab.cancelJob(attendSched);
             attendSched = 0;
             message.channel.send("Attendance reminder is turned OFF");
+            active.pop("attendance");
         }
     }
 
@@ -43,12 +46,14 @@ client.on("message", (message) => {
             bgmiSchedule = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
                 message.channel.send("Its been a minute now")
             });
+            active.push("bgmi");
         }
         else
         {
             crontab.cancelJob(bgmiSchedule);
             bgmiSchedule = 0;
             message.channel.send("BGMI reminder is turned OFF");
+            active.pop("bgmi");
         }
     }
     if(commandName === "help")
@@ -62,6 +67,26 @@ client.on("message", (message) => {
             {name:"!help",value:"To get a list of available commands"},
         );
         message.channel.send(helpEmbed);
+    }
+    if(commandName === 'status')
+    {
+        if(active.length == 0)
+        {
+            message.channel.send("No active alerts");
+        }
+        else
+        {
+            const statusEmbed = new Discord.MessageEmbed();
+            statusEmbed.setColor('#0099ff');
+            statusEmbed.setTitle('Active commands');
+            for(let i =0;i<active.length;i++)
+            {
+                statusEmbed.addField(`${active[i]}`);
+            }
+            message.channel.send(statusEmbed);
+
+        }
+
     }
 });
 
