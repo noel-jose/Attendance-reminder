@@ -11,6 +11,8 @@ client.once("ready", () => {
 var attendSched = 0;
 var bgmiSchedule = 0;
 const active = new Set();
+const bgmiMessages = ["Bhaa guys kalikkam \n@everyone", "Padutham nirth BGMI il kerr\n@everyone", "Cmon guys chicken dinner adikkam\n@everyone", "@everyone lets kill some bots", "Keri vaa guys\n@everyone", "6:40 aayi punctuality ille ningalk\n@everyone", "BGMI waiting for you guys\n@everyone"];
+
 
 client.on("message", (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -24,7 +26,7 @@ client.on("message", (message) => {
         {
             message.channel.send("attendance reminder is ON");
             attendSched = crontab.scheduleJob("36 8-12 * * 1-5", function(){ //This will call this function every hour from 8-12 and every day from monday-friday
-                message.channel.send("Attendance mark cheyyu");
+                message.channel.send("@everyone Attendance mark cheyyu");
             });
             active.add("attendance");
         }
@@ -44,7 +46,8 @@ client.on("message", (message) => {
         {
             message.channel.send("BGMI reminder is ON");
             bgmiSchedule = crontab.scheduleJob("35 18 * * *", function(){ //This will call this function every day at 6:35 PM
-                message.channel.send("Bgmi kalikkuvalle guys");
+                const random = Math.floor(Math.random() * bgmiMessages.length);
+                message.channel.send(bgmiMessages[random]);
             });
             active.add("bgmi");
         }
@@ -66,7 +69,7 @@ client.on("message", (message) => {
             {name:"!bgmi" , value:"Used to activate and deactivate the bgmi reminder"},
             {name:"!help",value:"To get a list of available commands"},
             {name:"!status",value:"To get a list of reminders that are active"},
-            {name:"!clear",value:"To clear 200 previous messages"}
+            {name:"!clear",value:"To clear 100 previous messages"}
         );
         message.channel.send(helpEmbed);
     }
@@ -93,7 +96,7 @@ client.on("message", (message) => {
     }
     if(commandName === "clear")
     {
-        message.channel.bulkDelete(200);
+        message.channel.bulkDelete(100);
     }
     
 });
