@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const token = process.env.token;
 const crontab = require('node-crontab');
 
 prefix = "!";
