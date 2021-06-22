@@ -10,7 +10,7 @@ client.once("ready", () => {
 
 var attendSched = 0;
 var bgmiSchedule = 0;
-let active = []
+const active = new Set();
 
 client.on("message", (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -26,14 +26,14 @@ client.on("message", (message) => {
             attendSched = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
                 message.channel.send("Its been a minute now")
             });
-            active.push("attendance");
+            active.add("attendance");
         }
         else
         {
             crontab.cancelJob(attendSched);
             attendSched = 0;
             message.channel.send("Attendance reminder is turned OFF");
-            active.pop("attendance");
+            active.delete("attendance");
         }
     }
 
@@ -46,14 +46,14 @@ client.on("message", (message) => {
             bgmiSchedule = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
                 message.channel.send("Its been a minute now")
             });
-            active.push("bgmi");
+            active.add("bgmi");
         }
         else
         {
             crontab.cancelJob(bgmiSchedule);
             bgmiSchedule = 0;
             message.channel.send("BGMI reminder is turned OFF");
-            active.pop("bgmi");
+            active.delete("bgmi");
         }
     }
     if(commandName === "help")
@@ -65,12 +65,13 @@ client.on("message", (message) => {
             {name:"!attendace " ,value :"Used to activate and deactivate attendace reminder"},
             {name:"!bgmi" , value:"Used to activate and deactivate the bgmi reminder"},
             {name:"!help",value:"To get a list of available commands"},
+            {name:"!status",value:"To get a list of reminders that are active"},
         );
         message.channel.send(helpEmbed);
     }
     if(commandName === 'status')
     {
-        if(active.length == 0)
+        if(active.size == 0)
         {
             message.channel.send("No active alerts");
         }
@@ -79,9 +80,10 @@ client.on("message", (message) => {
             const statusEmbed = new Discord.MessageEmbed();
             statusEmbed.setColor('#0099ff');
             statusEmbed.setTitle('Active commands');
-            for(let i =0;i<active.length;i++)
+            var obj = active.values();
+            for(let i =0;i<active.size;i++)
             {
-                statusEmbed.addField(`${active[i]}`);
+                statusEmbed.addField(`${obj.next().value}`,`------------`);
             }
             message.channel.send(statusEmbed);
 
