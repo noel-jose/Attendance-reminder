@@ -23,8 +23,8 @@ client.on("message", (message) => {
         if(attendSched === 0)
         {
             message.channel.send("attendance reminder is ON");
-            attendSched = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
-                message.channel.send("Its been a minute now")
+            attendSched = crontab.scheduleJob("36 8-12 * * 1-5", function(){ //This will call this function every hour from 8-12 and every day from monday-friday
+                message.channel.send("Attendance mark cheyyu");
             });
             active.add("attendance");
         }
@@ -43,8 +43,8 @@ client.on("message", (message) => {
         if(bgmiSchedule === 0)
         {
             message.channel.send("BGMI reminder is ON");
-            bgmiSchedule = crontab.scheduleJob("*/1 * * * *", function(){ //This will call this function every 2 minutes
-                message.channel.send("Its been a minute now")
+            bgmiSchedule = crontab.scheduleJob("35 18 * * *", function(){ //This will call this function every day at 6:35 PM
+                message.channel.send("Bgmi kalikkuvalle guys");
             });
             active.add("bgmi");
         }
@@ -66,6 +66,7 @@ client.on("message", (message) => {
             {name:"!bgmi" , value:"Used to activate and deactivate the bgmi reminder"},
             {name:"!help",value:"To get a list of available commands"},
             {name:"!status",value:"To get a list of reminders that are active"},
+            {name:"!clear",value:"To clear 200 previous messages"}
         );
         message.channel.send(helpEmbed);
     }
@@ -79,7 +80,7 @@ client.on("message", (message) => {
         {
             const statusEmbed = new Discord.MessageEmbed();
             statusEmbed.setColor('#0099ff');
-            statusEmbed.setTitle('Active commands');
+            statusEmbed.setTitle('Active alerts');
             var obj = active.values();
             for(let i =0;i<active.size;i++)
             {
@@ -90,6 +91,11 @@ client.on("message", (message) => {
         }
 
     }
+    if(commandName === "clear")
+    {
+        message.channel.bulkDelete(200);
+    }
+    
 });
 
 client.login(token);
