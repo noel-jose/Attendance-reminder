@@ -16,9 +16,9 @@ const bgmiMessages = ["Bhaa guys kalikkam \n@everyone", "Padutham nirth BGMI il 
 function attendanceSetter(){
     if(attendSched === 0)
         {
-            message.channel.send("attendance reminder is ON");
+            client.channels.get('857132243390038017').send("attendance reminder is ON");
             attendSched = crontab.scheduleJob("36 8-12 * * 1-5", function(){ //This will call this function every hour from 8-12 and every day from monday-friday
-                message.channel.send("@everyone Attendance mark cheyyu");
+                client.channels.get('857132243390038017').send("@everyone Attendance mark cheyyu");
             });
             active.add("attendance");
         }
@@ -26,7 +26,7 @@ function attendanceSetter(){
         {
             crontab.cancelJob(attendSched);
             attendSched = 0;
-            message.channel.send("Attendance reminder is turned OFF");
+            client.channels.get('857132243390038017').send("Attendance reminder is turned OFF");
             active.delete("attendance");
         }
 }
@@ -35,10 +35,10 @@ function attendanceSetter(){
 function bgmiSetter(){
     if(bgmiSchedule === 0)
         {
-            message.channel.send("BGMI reminder is ON");
+            client.channels.get('857132243390038017').send("BGMI reminder is ON");
             bgmiSchedule = crontab.scheduleJob("35 18 * * *", function(){ //This will call this function every day at 6:35 PM
                 const random = Math.floor(Math.random() * bgmiMessages.length);
-                message.channel.send(bgmiMessages[random]);
+                client.channels.get('857132243390038017').send(bgmiMessages[random]);
             });
             active.add("bgmi");
         }
@@ -46,12 +46,12 @@ function bgmiSetter(){
         {
             crontab.cancelJob(bgmiSchedule);
             bgmiSchedule = 0;
-            message.channel.send("BGMI reminder is turned OFF");
+            client.channels.get('857132243390038017').send("BGMI reminder is turned OFF");
             active.delete("bgmi");
         }
 }
 
-client.once("ready", (message) => {
+client.once("ready", () => {
     console.log("Ready!");
     attendanceSetter();
     bgmiSetter();
