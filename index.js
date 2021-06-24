@@ -51,7 +51,7 @@ function bgmiSetter(){
         }
 }
 
-client.once("ready", () => {
+client.once("ready", (message) => {
     console.log("Ready!");
     attendanceSetter();
     bgmiSetter();
